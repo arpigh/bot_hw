@@ -5,16 +5,16 @@ import random
 from pymorphy2 import MorphAnalyzer
 morph = MorphAnalyzer()
 
-f = codecs.open('1grams-3.txt', r, utf_8 ) #словая взяты с httpruscorpora.rucorpora-freq.html
+f = codecs.open('1grams-3.txt', r, utf_8 ) #Г±Г«Г®ГўГ Гї ГўГ§ГїГІГ» Г± httpruscorpora.rucorpora-freq.html
 words = f.read()
 f.close()
 words = re.sub('[0-9]', '', words)
 words = words.split()
-words_dct = {} #словарь из слов разных частей речи
-len(words) #время на обработку такого кол-ва слов будет велико, для работы бота берем только первые 10 тыс. слов
+words_dct = {} #Г±Г«Г®ГўГ Г°Гј ГЁГ§ Г±Г«Г®Гў Г°Г Г§Г­Г»Гµ Г·Г Г±ГІГҐГ© Г°ГҐГ·ГЁ
+len(words) #ГўГ°ГҐГ¬Гї Г­Г  Г®ГЎГ°Г ГЎГ®ГІГЄГі ГІГ ГЄГ®ГЈГ® ГЄГ®Г«-ГўГ  Г±Г«Г®Гў ГЎГіГ¤ГҐГІ ГўГҐГ«ГЁГЄГ®, Г¤Г«Гї Г°Г ГЎГ®ГІГ» ГЎГ®ГІГ  ГЎГҐГ°ГҐГ¬ ГІГ®Г«ГјГЄГ® ГЇГҐГ°ГўГ»ГҐ 10 ГІГ»Г±. Г±Г«Г®Гў
 words_10 = words[10000]
 
-for word in words_10 #состаления словая
+for word in words_10 #Г±Г®Г±ГІГ Г«ГҐГ­ГЁГї Г±Г«Г®ГўГ Гї
     analysis = morph.parse(word)[0]
     try
         lst = words_dct[analysis.tag.POS]
@@ -22,38 +22,38 @@ for word in words_10 #состаления словая
     except     
         words_dct[analysis.tag.POS] = [analysis.normal_form] 
         
-def new_message(mes) #создание нового сообщения
-    mes = re.sub('[^а-яsА-Я]', '', mes) #удаляем из предложения все, кроме букв и пробелов
+def new_message(mes) #Г±Г®Г§Г¤Г Г­ГЁГҐ Г­Г®ГўГ®ГЈГ® Г±Г®Г®ГЎГ№ГҐГ­ГЁГї
+    mes = re.sub('[^Г -ГїsГЂ-Гџ]', '', mes) #ГіГ¤Г Г«ГїГҐГ¬ ГЁГ§ ГЇГ°ГҐГ¤Г«Г®Г¦ГҐГ­ГЁГї ГўГ±ГҐ, ГЄГ°Г®Г¬ГҐ ГЎГіГЄГў ГЁ ГЇГ°Г®ГЎГҐГ«Г®Гў
     print(mes)
     new_mes = ''
     for word in mes.split()
         analysis = morph.parse(word)[0]
         j = 0 
-        while(j == 0) #подбираем слова , пока не встетим слово с теми же тегами лексемы, что и введенное слово 
+        while(j == 0) #ГЇГ®Г¤ГЎГЁГ°Г ГҐГ¬ Г±Г«Г®ГўГ  , ГЇГ®ГЄГ  Г­ГҐ ГўГ±ГІГҐГІГЁГ¬ Г±Г«Г®ГўГ® Г± ГІГҐГ¬ГЁ Г¦ГҐ ГІГҐГЈГ Г¬ГЁ Г«ГҐГЄГ±ГҐГ¬Г», Г·ГІГ® ГЁ ГўГўГҐГ¤ГҐГ­Г­Г®ГҐ Г±Г«Г®ГўГ® 
             new_word = words_dct[analysis.tag.POS][random.randint(0, len(words_dct[analysis.tag.POS])-1)]
             analysis_new = morph.parse(new_word)[0]                                                      
-            for i in analysis_new.lexeme #проходимся по всем лексемам случ. слова
-                if (i.tag == analysis.tag)#сравнивает теги
+            for i in analysis_new.lexeme #ГЇГ°Г®ГµГ®Г¤ГЁГ¬Г±Гї ГЇГ® ГўГ±ГҐГ¬ Г«ГҐГЄГ±ГҐГ¬Г Г¬ Г±Г«ГіГ·. Г±Г«Г®ГўГ 
+                if (i.tag == analysis.tag)#Г±Г°Г ГўГ­ГЁГўГ ГҐГІ ГІГҐГЈГЁ
                     j = 1 
-                    analysis_new = i #если находим одинаковые теги, выходим из цикла while
+                    analysis_new = i #ГҐГ±Г«ГЁ Г­Г ГµГ®Г¤ГЁГ¬ Г®Г¤ГЁГ­Г ГЄГ®ГўГ»ГҐ ГІГҐГЈГЁ, ГўГ»ГµГ®Г¤ГЁГ¬ ГЁГ§ Г¶ГЁГЄГ«Г  while
 
         #print(analysis_new.word)
         new_mes += analysis_new.word + ' '
     return new_mes[-1]
     
-import telebot  # импортируем модуль pyTelegramBotAPI
-import config    # импортируем наш секретный токен
+import telebot  # ГЁГ¬ГЇГ®Г°ГІГЁГ°ГіГҐГ¬ Г¬Г®Г¤ГіГ«Гј pyTelegramBotAPI
+import config    # ГЁГ¬ГЇГ®Г°ГІГЁГ°ГіГҐГ¬ Г­Г Гё Г±ГҐГЄГ°ГҐГІГ­Г»Г© ГІГ®ГЄГҐГ­
 
-bot = telebot.TeleBot(config.TOKEN)  # создаем экземпляр бота
+bot = telebot.TeleBot(config.TOKEN)  # Г±Г®Г§Г¤Г ГҐГ¬ ГЅГЄГ§ГҐГ¬ГЇГ«ГїГ° ГЎГ®ГІГ 
 
-# этот обработчик запускает функцию send_welcome, когда пользователь отправляет команды start или help
+# ГЅГІГ®ГІ Г®ГЎГ°Г ГЎГ®ГІГ·ГЁГЄ Г§Г ГЇГіГ±ГЄГ ГҐГІ ГґГіГ­ГЄГ¶ГЁГѕ send_welcome, ГЄГ®ГЈГ¤Г  ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гј Г®ГІГЇГ°Г ГўГ«ГїГҐГІ ГЄГ®Г¬Г Г­Г¤Г» start ГЁГ«ГЁ help
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message)
-    bot.send_message(message.chat.id, Здравствуйте! Введите предложение, разделяя каждое слово пробелом. )
+    bot.send_message(message.chat.id, Г‡Г¤Г°Г ГўГ±ГІГўГіГ©ГІГҐ! Г‚ГўГҐГ¤ГЁГІГҐ ГЇГ°ГҐГ¤Г«Г®Г¦ГҐГ­ГЁГҐ, Г°Г Г§Г¤ГҐГ«ГїГї ГЄГ Г¦Г¤Г®ГҐ Г±Г«Г®ГўГ® ГЇГ°Г®ГЎГҐГ«Г®Г¬. )
     
-@bot.message_handler(func=lambda m True)  # этот обработчик реагирует на любое сообщение
+@bot.message_handler(func=lambda m True)  # ГЅГІГ®ГІ Г®ГЎГ°Г ГЎГ®ГІГ·ГЁГЄ Г°ГҐГ ГЈГЁГ°ГіГҐГІ Г­Г  Г«ГѕГЎГ®ГҐ Г±Г®Г®ГЎГ№ГҐГ­ГЁГҐ
 def send_len(message)
     bot.send_message(message.chat.id, new_message(message.text))
     
 if __name__ == '__main__'
-    bot.polling(none_stop=True)
+    bot.polling(none_stop=True) 
